@@ -1,9 +1,7 @@
-from Wrapper import HV_Wrapper
+from MPOD_Channel import MPOD_Channel
 
-hv_wrapper = HV_Wrapper()
 
-my_args = {'ip': '1234.5678.9101112', 'channel': '1253215235616', 'value': '100'}
-
-hv_wrapper.TryCommand('set_v', my_args)
-hv_wrapper.TryCommand('get_v', my_args)
-hv_wrapper.TryCommand('not in dictionary', my_args)
+mpod = MPOD_Channel('00.000.00', '4')
+mpod.PrintArgs()
+mpod.UpdateArg('v_min', 7.0)
+mpod.PrintArgs()
