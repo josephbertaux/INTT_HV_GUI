@@ -1,7 +1,10 @@
-from MPOD_Channel import MPOD_Channel
+from MPOD_Channel import *
+from DB_Connector import *
+from HV_GUI import *
 
+hv_gui = HV_GUI()
 
-mpod = MPOD_Channel('00.000.00', '4')
-mpod.PrintArgs()
-mpod.UpdateArg('v_min', 7.0)
-mpod.PrintArgs()
+while hv_gui.Loop():
+    continue
+
+hv_gui.window.close()
