@@ -24,7 +24,7 @@ class MPOD_SNMP():
         try:
             self.dict[arg][0] = float(val)
         except ValueError:
-            print('Python3\'s float() fails to cast "' + str(arg) + '" as float')
+            print('Python3\'s float() fails to cast "' + str(val) + '" as float')
             print('Value not passed')
             return
 
