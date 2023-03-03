@@ -1,27 +1,42 @@
+from parse import parse
+import random
+
 class MPOD_Channel_Commands():
     def Get(self, _arg):
         _arg = str(_arg)
 
         if _arg not in self.dict:
             print('key "' + _arg + '" not in internal cmd dictionary')
-            return -999
+            return
 
         if not self.dict[_arg]['readable']:
             print('key "' + _arg + '" not readable')
-            return -999
+            return
 
         print('snmpget{x} -Oqv -v 2c -m +WIENER-CRATE-MIB -c public {ip} {name}.u{ch}'.format(
             x=self.dict[_arg]['x'],
             ip=self.ip, name=self.dict[_arg]['name'],
             ch=self.ch))
 
-        #_val = ''
+        #_val = parse(self.dict[_arg]['format'], #output of snmp command)['val']
         #try:
-        #    _val = self.dict[_arg]['var_type'](#output of snmpget command)
+        #    self.dict[_arg]['val'] = self.dict[_arg]['var_type'](_val)
         #except ValueError:
         #    print('Could not cast "' + str(_val) + '" as type "' + str(type(self.dict[_arg]['var_type'])))
         #    return -999
         #self.dict[_arg]['val'] = _val
+
+        # Comment this out later and use the above block
+        # Return some random shit to see if Update() works
+        if self.dict[_arg]['str_type'] == 'i':
+            # Probably requesting status
+            self.dict[_arg]['val'] = random.randrange(3)
+        else:
+            if _arg == 'v_get':
+                self.dict[_arg]['val'] = 100.0 + random.random()
+            elif _arg == 'i_get':
+                self.dict[_arg]['val'] = (7.0 + random.random()) * 10 ** -6
+
         return self.dict[_arg]['val']
 
     def Set(self, _arg, _val):
@@ -49,7 +64,7 @@ class MPOD_Channel_Commands():
             name=self.dict[_arg]['name'],
             ch=self.ch,
             str_type=self.dict[_arg]['str_type'],
-            val=_val))
+            val=self.dict[_arg]['format'].format(self.dict[_arg]['val'])))
 
 
 
@@ -80,23 +95,11 @@ class MPOD_Channel_Commands():
         return
 
     def TurnOff(self):
-        _ladder = str(_ladder)
-
-        if _ladder not in self.ladder_dict:
-            print('key "' + _ladder + '" not in internal ladder dictionary')
-            return
-
-        self.Set(_ladder, 'switch', 0)
+        self.Set('switch', 0)
         return
 
     def ClearEvents(self, _ladder):
-        _ladder = str(_ladder)
-
-        if _ladder not in self.ladder_dict:
-            print('key "' + _ladder + '" not in internal ladder dictionary')
-            return
-
-        self.Set(_ladder, 'switch', 10)
+        self.Set('switch', 10)
         return
 
 
@@ -111,71 +114,87 @@ class MPOD_Channel_Commands():
             'status': {     # Read channel on/off or error status
                 'readable': True,
                 'writable': False,
-                'val':      '0',
+                'val':      0,
                 'x':        '',
                 'str_type': 'i',
                 'var_type': int,
-                'name':     'outputSwitch'},
+                'parse':    '{val}',
+                'format':   '{}',
+                'name':     'outputStatus'},
 
             'switch': {     # Toggle channel on/off
                 'readable': False,      # should read 'status' instead
                 'writable': True,
-                'val':      '0',        # should call with 0, (off), 4 (for disableKill; allows supervision behavior), 10 (for clear events to reset flags)
+                'val':      0,        # should call with 0, (off), 4 (for disableKill; allows supervision behavior), 10 (for clear events to reset flags)
                 'x':        '',
                 'str_type': 'i',
                 'var_type': int,
+                'parse':    '{val}',
+                'format':   '{}',
                 'name':     'outputSwitch'},
             
             'su_be': {      # Supervision Behavior
                 'readable': True,
                 'writable': True,
-                'val':      '128',      # should call with 64 for ramp down or 128 for emergency off when max current is exceeded
+                'val':      128,      # should call with 64 for ramp down or 128 for emergency off when max current is exceeded
                 'x':        '',
                 'str_type': 'i',
                 'var_type': int,
+                'parse':    '{val}',
+                'format':   '{}',
                 'name':     'outputSupervisionBehavior'},
             
             'tt_mc': {      # Duration for current to exceed maximum for supervision behavior to take effect
                 'readable': True,
                 'writable': True,
-                'val':      '16',       # should be 16ms, the minimun value when this is enabled
+                'val':      16,       # should be 16ms, the minimun value when this is enabled
                 'x':        '',
                 'str_type': 'i',
                 'var_type': int,
+                'parse':    '{val}',
+                'format':   '{}',
                 'name':     'outputTripTimeMaxCurrent'},
             
             'v_get': {      # Measured voltage (V)
                 'readable': True,
                 'writable': False,
-                'val':      '0.0',
+                'val':      0.0,
                 'x':        '',
                 'str_type': 'F',
                 'var_type': float,
+                'parse':    '{val}',
+                'format':   '{}',
                 'name':     'outputMeasurementSenseVoltage'},
 
             'v_set': {      # User set voltage (V)
                 'readable': True,
                 'writable': True,
-                'val':      '0.0',
+                'val':      0.0,
                 'x':        '',
                 'str_type': 'F',
                 'var_type': float,
+                'parse':    '{val}',
+                'format':   '{}',
                 'name':     'outputVoltage'},
             
             'i_get': {      # Measured current (A)
                 'readable': True,
                 'writable': False,
-                'val':      '0.0',
+                'val':      0.0,
                 'x':        'x',    # read/write with extra precision when running snmp commands
                 'str_type': 'F',
                 'var_type': float,
+                'parse':    '{val}',
+                'format':   '{:011.9f}',
                 'name':     'outputMeasurementCurrent'},
             
             'i_max': {      # Maximum current (A)
                 'readable': True,
                 'writable': True,
-                'val':      '0.0',
+                'val':      0.0,
                 'x':        'x',    # read/write with extra precision when running snmp commands
                 'str_type': 'F',
                 'var_type': float,
+                'parse':    '{val}',
+                'format':   '{:011.9f}',
                 'name':     'outputCurrent'}}

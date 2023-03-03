@@ -1,6 +1,15 @@
 from MPOD_Channel_Graphics import *
 
 class MPOD_Layman_GUI():
+    def Update(self, _s):
+        k = parse('{}___{}___{}', _s).fixed
+        self.window.perform_long_operation(self.dict[k[0]][k[1]][k[2]].Update, _s)
+
+    def StartUpdates(self):
+        for k, v in self.dict.items():          # Barrels
+            for kk, vv in v.items():            # Ladders
+                for kkk, vvv in vv.items():     # Sensors/MPOD_Channel_Graphics
+                    self.Update(k + '___' + kk + '___' + kkk)
     def Loop(self):
         event, values = self.window.read()
 
@@ -8,9 +17,22 @@ class MPOD_Layman_GUI():
             return False
 
         if callable(event):
-            self.window.perform_long_operation(event, '__DONE__')
+            self.window.perform_long_operation(event, '___USER___')
+            return True
 
-        return True
+        elif event == '___USER___':
+            # Do nothing
+            # A thread started by user input has finished
+            return True
+
+        else:
+            # An update thread has finished
+            if(values[event]):
+                print('flag for event: ' + event + 'was set')
+
+            # Restart the thread
+            self.Update(event)
+            return True
 
     def __init__(self):
 
@@ -55,10 +77,11 @@ class MPOD_Layman_GUI():
         self.tab_groups = {k:[] for k, v in self.dict.items()}
         for k, v in self.dict.items():
             for kk, vv in v.items():
-                row = [sg.Text(k + kk, s=6)]
+                row = [sg.VSeperator(), sg.Text(k + kk, s=6)]
                 for kkk, vvv in vv.items():
-                    for i in vvv.gui_elements:
+                    for i in vvv.layman_elements:
                         row += [i]
+                    row += [sg.VSeperator()]
                 self.tab_groups[k] += [row]
 
         self.layout = [[sg.TabGroup([[sg.Tab(k, v) for k, v in self.tab_groups.items()]])]]
