@@ -43,23 +43,24 @@ class MPOD_Layman_GUI():
                 'sa':{'ip':'1.0.0.1', 'ch':'107'}}}
 
         biz = {'B0L0':foo, 'B1L1':bar}
+        print(biz['B0L0']['00']['na']['ip'])
 
         self.dict = {
             k:{                                                                                     # Barrel
                 kk:{                                                                                # Ladder
-                    kkk:MPOD_Channel_Graphics(vvv['ip'], vvv['ch']) for vvv, kkk in vv.items()}     # Sensor/MPOD_Channel
+                    kkk:MPOD_Channel_Graphics(vvv['ip'], vvv['ch']) for kkk, vvv in vv.items()}     # Sensor/MPOD_Channel
                 for kk, vv in v.items()}
             for k, v in biz.items()}
 
-        self.tab_groups = {k:[[]] for k, v in self.dict.items()}
+        self.tab_groups = {k:[] for k, v in self.dict.items()}
         for k, v in self.dict.items():
             for kk, vv in v.items():
-                row = []
+                row = [sg.Text(k + kk, s=6)]
                 for kkk, vvv in vv.items():
                     for i in vvv.gui_elements:
                         row += [i]
-                self.tab_groups[k] += row
+                self.tab_groups[k] += [row]
 
-        self.layout = [[sg.TabGroup([[sg.Tab(k, v) for k, v in self.tab_groups]])]]
+        self.layout = [[sg.TabGroup([[sg.Tab(k, v) for k, v in self.tab_groups.items()]])]]
 
         self.window = sg.Window('Sample Text', self.layout)

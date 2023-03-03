@@ -1,5 +1,4 @@
-class MPOD_Channel_Wrapper():
-
+class MPOD_Channel_Commands():
     def Get(self, _arg):
         _arg = str(_arg)
 
@@ -52,6 +51,8 @@ class MPOD_Channel_Wrapper():
             str_type=self.dict[_arg]['str_type'],
             val=_val))
 
+
+
     def TurnOn(self):
         # Check to see if this channel was previously set with flag for outputFailureMaxCurrent
         if self.Get('status') == 4:
@@ -63,10 +64,12 @@ class MPOD_Channel_Wrapper():
         # Set all to diableKill (need to check if this can be done individually with outputSwitch 4)
         #print('snmpset -Oqv -v 2c -m +WIENER-CRATE-MIB -c guru {ip} groupsSwitch.64 i 4'.format(ip=self.ip))
 
-        # Set its supervision behavior to emergency off when trip current is exceeded (ramp down is 64, emergency off is 128, all off is 192)
+        # Set its supervision behavior to emergency off when trip current is exceeded
+        # (ramp down is 64, emergency off is 128, all off is 192)
         self.Set('su_be', 128)
 
-        # Set the trip time (time the current exceeds maximum to trip; default is 0 but this disables tripping--shortest trip time is 16ms)
+        # Set the trip time (time the current exceeds maximum to trip
+        # (default is 0 but this disables tripping--shortest trip time is 16ms)
         self.Set('tt_mc', 16)
         
         # Set the current limit to something small  # !!!   THIS VALUE IS IN AMPS   !!!
