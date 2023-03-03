@@ -13,7 +13,7 @@ class MPOD_SNMP():
             return self.dict[arg][0]
 
         #self.dict[arg][0] = print(self.dict[arg][1][1])
-        print(self.dict[arg][1][1])
+        print(self.dict[arg][1][1].format(ip=self.ip, ch=self.ch, val=arg))
         return self.dict[arg][0]
 
     def SetArg(self, arg, val):
@@ -36,67 +36,67 @@ class MPOD_SNMP():
         print(self.dict[arg][2][1].format(str(self.dict[arg][0])))
 
 
-    def __init__(self, _ip, _channel):
-        self.ip = _ip
-        self.channel = _channel
-
+    def __init__(self, _ip, _ch):
+        self.ip = _ip   # The IP of this MPOD formatted as a string
+        self.ch = _ch
+    
         self.dict = {
             'status': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputStatus.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputStatus.u' + _channel+' i {}']],
-
-
-
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c public {ip} outputStatus.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputStatus.u{ch} i {val}']],
+    
+    
+    
             'v_get': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputMeasurementSenseVoltage.u' + _channel],
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputMeasurementSenseVoltage.u{ch}'],
                 [False, '']],
             'v_set': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputVoltage.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputVoltage.u' + _channel+' F {}']],
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputVoltage.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputVoltage.u{ch} F {val}']],
             'v_min': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputSupervisionMinSenseVoltage.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputSupervisionMinSenseVoltage.u' + _channel+' F {}']],
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputSupervisionMinSenseVoltage.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputSupervisionMinSenseVoltage.u{ch} F {val}']],
             'v_max': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputSupervisionMaxSenseVoltage.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputSupervisionMaxSenseVoltage.u' + _channel+' F {}']],
-
-
-
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputSupervisionMaxSenseVoltage.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputSupervisionMaxSenseVoltage.u{ch} F {val}']],
+    
+    
+    
             'i_get': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputMeasurementCurrent.u' + _channel],
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputMeasurementCurrent.u{ch}'],
                 [False, '']],
             'i_set': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputCurrent.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputCurrent.u' + _channel+' F {}']],
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputCurrent.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputCurrent.u{ch} F {val}']],
             'i_max': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputSupervisionMaxCurrent.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputSupervisionMaxCurrent.u' + _channel+' F {}']],
-
-
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputSupervisionMaxCurrent.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputSupervisionMaxCurrent.u{ch} F {val}']],
     
-
+    
+    
+    
             'v_rise': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputVoltageRiseRate.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputVoltageRiseRate.u' + _channel+' F {}']],
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputVoltageRiseRate.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputVoltageRiseRate.u{ch} F {val}']],
             'v_fall': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputVoltageFallRate.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputVoltageFallRate.u' + _channel+' F {}']],
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputVoltageFallRate.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputVoltageFallRate.u{ch} F {val}']],
             'i_rise': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputCurrentRiseRate.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputCurrentRiseRate.u' + _channel+' F {}']],
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputCurrentRiseRate.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputCurrentRiseRate.u{ch} F {val}']],
             'i_fall': [
                 0.0,
-                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputCurrentFallRate.u' + _channel],
-                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru ' + _ip + ' outputCurrentFallRate.u' + _channel+' F {}']]}
-
+                [True,  'snmpget -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputCurrentFallRate.u{ch}'],
+                [True,  'snmpset -OqvU -v 2c -m +WIENER-CRATE-MIB -c guru {ip} outputCurrentFallRate.u{ch} F {val}']]}
+    
