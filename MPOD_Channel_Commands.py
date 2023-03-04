@@ -104,9 +104,9 @@ class MPOD_Channel_Commands():
 
 
 
-    def __init__(self, _ip, _ch):
-        self.ip = _ip
-        self.ch = _ch
+    def __init__(self, _map):
+        self.ip = _map['ip']
+        self.ch = _map['ch']
 
         # Dictionary of SNMP commands
         # Shortened key with [value, command keyword]

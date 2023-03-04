@@ -1,7 +1,5 @@
-from MPOD_Layman_GUI import *
+from Layman_GUI import *
 
-mpod_layman_gui = MPOD_Layman_GUI()
-while(mpod_layman_gui.Loop()):
+gui = Layman_GUI()
+while(gui.Loop()):
     continue
-
-mpod_layman_gui.window.close()
